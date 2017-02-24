@@ -2,7 +2,7 @@ import numpy as np
 import glob
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-path = "data/IRTL_frames/"
+path = "IRTL_frames/"
 fnames = glob.glob(path + "*.npy")
 frames = np.array([np.load(i) for i in fnames])
 temp_frame = frames[0][28:696, 990, :]
