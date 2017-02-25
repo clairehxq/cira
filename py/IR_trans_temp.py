@@ -2,7 +2,7 @@ import numpy as np
 import glob
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-path = "IRTL_frames/"
+path = "data/IRTL_frames/"
 fnames = glob.glob(path + "*.npy")
 frames = np.array([np.load(i) for i in fnames])
 temp_frame = frames[0][28:696, 990, :]
@@ -17,4 +17,5 @@ def cal_temp(data):
     return temp_.reshape(temp.shape[0], temp.shape[1])
 
 out_temp = np.array(list(map(cal_temp, frames)))
+np.save("IR_temperature.npy", out_temp )
 print(out_temp.shape)
