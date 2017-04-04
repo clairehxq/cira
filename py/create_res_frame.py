@@ -6,6 +6,7 @@ Created on Tue Mar 28 23:45:49 2017
 """
 import os
 import matplotlib.pyplot as plt
+import numpy as np
 
 # get current working directory
 cwd = os.getcwd()
@@ -19,28 +20,39 @@ def transferback(ft):
     
 # load in filtered data
 res = {}
-maxt = []
-mint = []
+threshold = {}
+
+# getting clim values
 for i in range(1,6):
-    res[i] = np.load(cwd + 'data/res_{}.npy'.format(i))
-    maxtt = res[i].max(axis = 1).max()
-    mintt = res[i].min(axis = 1).min()
-    maxt.append(maxtt)
-    mint.append(mintt)
-    
-# find lowest value and highest value over time
-maxtemp = maxt.max()
-mintemp = mint.min()
+    res[i] = np.load(os.path.join(cwd, 'res_{}.npy'.format(i)))
+    # choose a frame in the middle of time 354
+
+    temp_frame = res[i][: , 354]
+    std = temp_frame.std()
+    mean = temp_frame.mean()
+    # creating a threshold for 3 std
+    threshold[i] = (mean - 3 * std, mean + 3 * std)
+    print threshold[i]
+
+def ensure_dir(file_path):
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 def doplot(res):
     ''' 
     create png file and save in 'gf_frame' folder
     '''
-    res_ = transferback(res)
-    for j in range(0,len(res)):
-        res_ = transferback(res[j])
-        for i in range(0, res_.shape[0]):
-            plt.imsave('/gf_frame_{}/frame_{}.png'.format(j,i),res_[i,:,:], cmap = 'gist_heat', vmin = mintemp, vmax = maxtemp)
 
+    for j in range(1,len(res)+1):
+        res_ = transferback(res[j])
+        os.makedirs(cwd+'/gf_frame_0403_1_{}'.format(j))
+        os.chdir(cwd+'/gf_frame_0403_1_{}'.format(j))
+        for i in range(0, res_.shape[0]):
+            plt.imsave('frame_{}.png'.format(i), res_[i,:,:], cmap = 'gist_heat', vmin = threshold[j][0], vmax = threshold[j][1])
+        
+        os.chdir(cwd)
 
 doplot(res)    
+
+
