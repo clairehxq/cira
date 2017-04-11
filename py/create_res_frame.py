@@ -24,7 +24,7 @@ threshold = {}
 
 # getting clim values
 for i in range(1,6):
-    res[i] = np.load(os.path.join(cwd, 'res_{}.npy'.format(i)))
+    res[i] = get_res(i)
     # choose a frame in the middle of time 354
 
     temp_frame = res[i][: , 354]
@@ -53,6 +53,6 @@ def doplot(res):
         
         os.chdir(cwd)
 
-doplot(res)    
+#doplot(res)    
 
 

@@ -8,7 +8,7 @@ Created on Apr 4 23:45:49 2017
 import numpy as np
 import pandas as pd
 from sklearn import cluster
-from sklearn.mixture import GaussianMixture
+#from sklearn.mixture import GaussianMixture
 from sklearn.cluster import KMeans, hierarchical
 from sklearn.metrics import silhouette_score
 from scipy.cluster import hierarchy
@@ -24,13 +24,21 @@ def best_clu_num(model, data):
     score = []
     clu_num = []
     if model == 'KMeans':
-        for i in range(len(data))[1:]:
-            try:
-                score.append(silhouette_score(data, KMeans(n_clusters=i, random_state=123).fit(data).labels_))
-                clu_num.append(i)
-            except ValueError:
-                continue
-                
+        if len(data) <= 50:
+            for i in range(len(data))[1:]:
+                try:
+                    score.append(silhouette_score(data, KMeans(n_clusters=i, random_state=123).fit(data).labels_))
+                    clu_num.append(i)
+                except ValueError:
+                    continue
+        else:
+            for i in range(50)[1:]:
+                try:
+                    score.append(silhouette_score(data, KMeans(n_clusters=i, random_state=123).fit(data).labels_))
+                    clu_num.append(i)
+                except ValueError:
+                    continue
+                    
     elif model == 'GaussianMixture': 
         if len(data) <= 50:
             for i in range(len(data)):
